@@ -1,0 +1,59 @@
+name: Run OpenEO Tests and Publish Report
+
+on:
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+      
+      - name: Create virtual environment
+        run: python -m venv venv
+      
+      - name: Activate virtual environment and install dependencies
+        run: |
+          source venv/bin/activate
+          pip install --upgrade pip
+          pip install -e .
+      
+      - name: Run OpenEO tests
+        run: |
+          source venv/bin/activate
+          pytest src/openeo_test_suite/tests/general/ \
+            --html=reports/general.html \
+            --openeo-backend-url=https://openeo-staging.datalakecube.eumetsat.data.destination-earth.eu/openeo/1.1.0/
+      
+      - name: Upload test report as artifact
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: test-reports
+          path: reports/general.html
+      
+      - name: Deploy report to GitHub Pages
+        if: always()
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./reports
+          destination_dir: test-reports/${{ github.run_number }}
+
+  publish-pages:
+    needs: test
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    
+    steps:
+      - name: Deploy to GitHub Pages
+        uses: actions/deploy-pages@v2
