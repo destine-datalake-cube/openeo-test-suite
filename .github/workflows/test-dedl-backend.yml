@@ -1,7 +1,8 @@
-name: Run OpenEO Tests and Publish Report
-
+name: Run OpenEO Tests
 on:
-  workflow_dispatch:
+  repository_dispatch:
+    types:
+      - test-execute-openeotestsuite
 
 jobs:
   test:
@@ -40,22 +41,3 @@ jobs:
         with:
           name: test-reports
           path: reports/general.html
-      
-      - name: Deploy report to GitHub Pages
-        if: always()
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./reports
-          destination_dir: test-reports/${{ github.run_number }}
-
-  publish-pages:
-    needs: test
-    runs-on: ubuntu-latest
-    permissions:
-      pages: write
-      id-token: write
-    
-    steps:
-      - name: Deploy to GitHub Pages
-        uses: actions/deploy-pages@v2
