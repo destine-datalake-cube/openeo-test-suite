@@ -29,6 +29,7 @@ jobs:
           pip install -e .
           mkdir -p /home/runner/.local/share/openeo-python-client/
           echo ${{ secrets.OPENEO_REFRESH_TOKEN }} > /home/runner/.local/share/openeo-python-client/refresh-tokens.json
+          chmod 600 /home/runner/.local/share/openeo-python-client/refresh-tokens.json
       
       - name: Run OpenEO tests
         run: |
