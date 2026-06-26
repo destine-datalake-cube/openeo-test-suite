@@ -27,7 +27,8 @@ jobs:
           source venv/bin/activate
           pip install --upgrade pip
           pip install -e .
-          openeo-auth oidc-auth https://openeo-staging.datalakecube.eumetsat.data.destination-earth.eu/openeo/1.1.0/
+          mkdir -p /home/runner/.local/share/openeo-python-client/
+          echo ${{ secrets.OPENEO_REFRESH_TOKEN }} > /home/runner/.local/share/openeo-python-client/refresh-tokens.json
       
       - name: Run OpenEO tests
         run: |
