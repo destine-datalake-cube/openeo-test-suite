@@ -36,7 +36,13 @@ jobs:
       - name: Run OpenEO tests
         run: |
           source venv/bin/activate
-          python run_tests_and_count.py
+          python run_tests_and_count.py > success_percentage.txt
+          
+      - name: Upload success percentage
+        uses: actions/upload-artifact@v4
+        with:
+          name: success-percentage
+          path: reports/success_percentage.txt
 
       - name: Upload test report as artifact
         if: always()
