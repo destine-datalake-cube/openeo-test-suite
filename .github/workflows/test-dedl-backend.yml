@@ -36,10 +36,8 @@ jobs:
       - name: Run OpenEO tests
         run: |
           source venv/bin/activate
-          pytest src/openeo_test_suite/tests/general/ \
-            --html=reports/general.html \
-            --openeo-backend-url=https://openeo-staging.datalakecube.eumetsat.data.destination-earth.eu/openeo/1.1.0/
-      
+          python run_tests_and_count.pytest
+
       - name: Upload test report as artifact
         if: always()
         uses: actions/upload-artifact@v7
