@@ -36,7 +36,7 @@ jobs:
       - name: Run OpenEO tests
         run: |
           source venv/bin/activate
-          python run_tests_and_count.pytest
+          python run_tests_and_count.py
 
       - name: Upload test report as artifact
         if: always()
