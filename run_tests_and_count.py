@@ -1,0 +1,26 @@
+import subprocess
+import re
+
+def get_pytest_success_percentage():
+    result = subprocess.run(
+        ['pytest',
+         'src/openeo_test_suite/tests/general/test_compliance.py',
+         '--openeo-backend-url=https://openeo-staging.datalakecube.eumetsat.data.destination-earth.eu/openeo/1.1.0/',
+         '--tb=short',
+         '--html=reports/general.html'],
+        capture_output=True,
+        text=True
+    )
+
+    # Parse output for "passed X failed Y" pattern
+    passed = re.search(r'(\d+) passed(?:)?', result.stdout)
+    failed = re.search(r'(\d+) failed(?:)?', result.stdout)
+    passed = int(passed[0][:2])
+    failed = int(failed[0][:2])
+    total = passed + failed
+    
+    percentage = int((passed / total) * 100) if total > 0 else 100
+    return percentage
+    
+if __name__=="__main__":
+    print(get_pytest_success_percentage())
