@@ -15,12 +15,13 @@ def get_pytest_success_percentage():
     # Parse output for "passed X failed Y" pattern
     passed = re.search(r'(\d+) passed(?:)?', result.stdout)
     failed = re.search(r'(\d+) failed(?:)?', result.stdout)
-    passed = int(passed[0][:2])
-    failed = int(failed[0][:2])
+    passed = int(passed.group(1))
+    failed = int(failed.group(1))
     total = passed + failed
     
     percentage = int((passed / total) * 100) if total > 0 else 100
     return percentage
     
-if __name__=="__main__":
-    print(get_pytest_success_percentage())
+if __name__ == "__main__":
+    percentage = get_pytest_success_percentage()
+    print(f"SUCCESS_PERCENTAGE={percentage}")
